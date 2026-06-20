@@ -1,0 +1,21 @@
+{
+  "name": "fw-stats",
+  "version": "1.1.0",
+  "description": "CLI tool for FastWork marketplace stats with dashboard",
+  "bin": {
+    "fw-stats": "./fw-stats"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChindanaiNaKub/fw-stats.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ChindanaiNaKub/fw-stats/issues"
+  },
+  "homepage": "https://github.com/ChindanaiNaKub/fw-stats#readme",
+  "author": "ChindanaiNaKub",
+  "license": "MIT",
+  "files": [
+    "fw-stats"
+  ]
+}
