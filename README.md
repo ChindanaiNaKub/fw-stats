@@ -8,7 +8,7 @@ Reads **public** category/subcategory data (minimum prices, average ratings, rev
 
 ### CLI
 ```
-Category               Subcategory                         Min Price  Avg Rtg  Reviews  Ratio
+Category               Subcategory                         Min Price  Avg Rtg  Reviews  Opportunity
 ────────────────────────────────────────────────────────────────────────────────────────────────
 ออกแบบและ กราฟิก       Logo                                1500       4.8      29409    44113500
 โฆษณาการตลาด           โปรโมทเพจ / เว็บ                    350        4.9      69826    24439100
@@ -47,7 +47,7 @@ Commands:
   serve          Start local dashboard server on port 3456
 
 Options:
-  --sort <field>   Sort by: price | ratio (default) | reviews
+  --sort <field>   Sort by: price | opportunity (default) | ratio | reviews
   --top <N>        Show only top N results (default: 20)
   --all            Show all results (no limit)
   --json           Output JSON array
@@ -59,7 +59,7 @@ Options:
 ### Examples
 
 ```bash
-# Top 20 subcategories by opportunity score (price × reviews)
+# Top 20 subcategories by opportunity score (price × reviews × avg_rating / 5)
 fw-stats
 
 # Top 10 highest-priced subcategories as JSON
