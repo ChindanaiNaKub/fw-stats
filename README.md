@@ -29,7 +29,13 @@ Category               Subcategory                         Min Price  Avg Rtg  R
 ## Install
 
 ```bash
-npm install -g fw-stats
+# via GitHub
+npm install -g github:ChindanaiNaKub/fw-stats
+
+# or clone and link
+git clone https://github.com/ChindanaiNaKub/fw-stats.git
+cd fw-stats
+npm install -g .
 ```
 
 ## Usage
