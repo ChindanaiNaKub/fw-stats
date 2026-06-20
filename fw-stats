@@ -50,7 +50,7 @@ function padToWidth(s, w) {
 }
 
 function parseArgs(argv) {
-  const args = { sort: 'ratio', top: null, format: 'table', showAll: false };
+  const args = { sort: 'opportunity', top: null, format: 'table', showAll: false };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--json')       { args.format = 'json'; continue; }
@@ -66,7 +66,7 @@ Commands:
   serve          Start local dashboard server on port 3456
 
 Options:
-  --sort <field>   Sort by: price | ratio (default) | reviews
+  --sort <field>   Sort by: price | opportunity (default) | ratio | reviews
   --top <N>        Show only top N results (default: 20)
   --all            Show all results (no limit)
   --json           Output JSON array
@@ -122,7 +122,7 @@ function flatten(data) {
           minimum_price: price,
           avg_rating:    rating,
           reviews_count: reviews,
-          ratio_score:   price * reviews,
+          opportunity_score: price * reviews * (rating / 5),
         });
       }
     }
@@ -132,15 +132,16 @@ function flatten(data) {
 
 // ── sorting ──────────────────────────────────────────────────────────
 const SORT_KEYS = {
-  price:   'minimum_price',
-  reviews: 'reviews_count',
-  ratio:   'ratio_score',
+  price:       'minimum_price',
+  reviews:     'reviews_count',
+  opportunity: 'opportunity_score',
+  ratio:       'opportunity_score',
 };
 
 function sortRows(rows, key) {
   const field = SORT_KEYS[key];
   if (!field) {
-    console.error(`Error: unknown sort key "${key}". Use: price, ratio, reviews`);
+    console.error(`Error: unknown sort key "${key}". Use: price, opportunity, ratio, reviews`);
     process.exit(1);
   }
   return rows.sort((a, b) => b[field] - a[field]);
@@ -148,8 +149,8 @@ function sortRows(rows, key) {
 
 // ── output formatters ────────────────────────────────────────────────
 function printTable(rows) {
-  const cols = ['Category', 'Subcategory', 'Min Price', 'Avg Rtg', 'Reviews', 'Ratio'];
-  const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'ratio_score'];
+  const cols = ['Category', 'Subcategory', 'Min Price', 'Avg Rtg', 'Reviews', 'Opportunity'];
+  const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'opportunity_score'];
 
   // compute display widths
   const widths = cols.map((c, i) => {
@@ -179,8 +180,8 @@ function printJson(rows) {
 }
 
 function printDelimited(rows, sep) {
-  const cols = ['Category', 'Subcategory', 'Min Price (THB)', 'Avg Rating', 'Reviews', 'Ratio Score'];
-  const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'ratio_score'];
+  const cols = ['Category', 'Subcategory', 'Min Price (THB)', 'Avg Rating', 'Reviews', 'Opportunity Score'];
+  const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'opportunity_score'];
   console.log(cols.join(sep));
   for (const r of rows) {
     console.log(keys.map(k => r[k] ?? '').join(sep));
@@ -197,7 +198,7 @@ async function fetchDataCached() {
   if (dataCache) return dataCache;
   const data = await fetchData();
   let rows = flatten(data);
-  rows = sortRows(rows, 'ratio');
+  rows = sortRows(rows, 'opportunity');
   dataCache = rows;
   return rows;
 }
@@ -262,8 +263,8 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
     function renderTable(data) {
       let html = '<table><thead><tr>';
-      const cols = ['Category', 'Subcategory', 'Min Price', 'Avg Rating', 'Reviews', 'Ratio'];
-      const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'ratio_score'];
+      const cols = ['Category', 'Subcategory', 'Min Price', 'Avg Rating', 'Reviews', 'Opportunity'];
+      const keys = ['category', 'subcategory', 'minimum_price', 'avg_rating', 'reviews_count', 'opportunity_score'];
       cols.forEach(c => { html += '<th>' + c + '</th>'; });
       html += '</tr></thead><tbody>';
       data.forEach(r => {

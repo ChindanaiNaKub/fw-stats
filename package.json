@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "CLI tool for FastWork marketplace stats with dashboard",
   "bin": {
-    "fw-stats": "./fw-stats"
+    "fw-stats": "fw-stats"
   },
   "repository": {
     "type": "git",
